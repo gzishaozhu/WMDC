@@ -5,6 +5,7 @@ import { OrbitControls } from "@react-three/drei";
 import { useState } from "react";
 import { District } from "./components/District";
 import { Weather, type WeatherMode } from "./components/Weather";
+import { SimulationActors } from "./components/SimulationActors";
 
 export default function Home() {
   const [selected, setSelected] = useState("滨水文化中心");
@@ -43,6 +44,7 @@ export default function Home() {
           />
           <District selected={selected} onSelect={setSelected} floodProgress={minute} />
           <Weather mode={weather} />
+          <SimulationActors minute={minute} />
           <OrbitControls
             makeDefault
             target={[0, 1.2, 0]}
@@ -109,6 +111,7 @@ export default function Home() {
             <span>积水深度 <b>{minute < 18 ? 0 : Math.round((minute - 18) * 2.8)} mm</b></span>
             <span>受影响道路 <b>{minute < 25 ? 0 : Math.ceil((minute - 24) / 12)} 条</b></span>
             <span>地下入口风险 <b>{minute < 38 ? "低" : minute < 52 ? "中" : "高"}</b></span>
+            <span>疏散状态 <b>{minute < 28 ? "待命" : minute < 58 ? "进行中" : "完成"}</b></span>
           </div>
         </div>
       </section>
