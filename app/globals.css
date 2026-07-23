@@ -35,7 +35,7 @@ button, a { font: inherit; }
   justify-self: end; border: 1px solid var(--ink); border-radius: 99px;
   background: transparent; padding: 10px 18px; color: var(--ink);
 }
-.scene { height: calc(100vh - 82px); min-height: 620px; position: relative; overflow: hidden; }
+.scene { height: calc(100vh - 82px); min-height: 720px; position: relative; overflow: hidden; }
 .scene canvas { touch-action: none; }
 .hero-copy { position: absolute; left: 4vw; top: 6vh; pointer-events: none; }
 .hero-copy p, .kicker { color: var(--orange); font-size: 12px; letter-spacing: .08em; }
@@ -66,8 +66,17 @@ button, a { font: inherit; }
 .building-card dd { margin:0; }
 .safe { color:#317052; }
 .notice { color:var(--muted); font-size:10px; line-height:1.6; margin:18px 0 0; }
-.scene-help { position:absolute; left:32px; bottom:28px; display:flex; gap:8px; }
+.scene-help { position:absolute; left:32px; bottom:140px; display:flex; gap:8px; }
 .scene-help span { background:rgba(20,44,52,.86); color:white; padding:8px 10px; font-size:10px; }
+.timeline {
+  position:absolute; left:32px; right:360px; bottom:28px; padding:16px 18px;
+  background:rgba(20,44,52,.9); color:white; backdrop-filter:blur(16px);
+}
+.timeline-heading { display:flex; justify-content:space-between; font-size:11px; }
+.timeline-heading strong { color:#ef7659; font-size:15px; }
+.timeline input { width:100%; accent-color:#dc5939; margin:14px 0 8px; }
+.timeline-stats { display:flex; gap:28px; color:#aebfbe; font-size:10px; }
+.timeline-stats b { color:white; margin-left:5px; }
 .intro-section {
   display:grid; grid-template-columns:100px 1.5fr 1fr; gap:4vw;
   padding:100px 4vw; border-top:1px solid var(--line); align-items:start;
@@ -83,6 +92,8 @@ button, a { font: inherit; }
   .hero-copy h1 { font-size:38px; }
   .building-card { left:18px; right:18px; bottom:18px; width:auto; }
   .weather-control { top:150px; right:18px; }
-  .scene-help { left:18px; bottom:265px; }
+  .scene-help { display:none; }
+  .timeline { left:18px; right:18px; bottom:270px; }
+  .timeline-stats { gap:10px; flex-wrap:wrap; }
   .intro-section { grid-template-columns:1fr; padding:70px 20px; }
 }

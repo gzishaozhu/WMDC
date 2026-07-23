@@ -9,6 +9,7 @@ import { Weather, type WeatherMode } from "./components/Weather";
 export default function Home() {
   const [selected, setSelected] = useState("滨水文化中心");
   const [weather, setWeather] = useState<WeatherMode>("clear");
+  const [minute, setMinute] = useState(0);
   const weatherNames = { clear: "晴天", rain: "小雨", storm: "暴雨" };
 
   return (
@@ -40,7 +41,7 @@ export default function Home() {
             intensity={weather === "clear" ? 2.5 : 0.7}
             color="#fff2d4"
           />
-          <District selected={selected} onSelect={setSelected} />
+          <District selected={selected} onSelect={setSelected} floodProgress={minute} />
           <Weather mode={weather} />
           <OrbitControls
             makeDefault
@@ -85,6 +86,30 @@ export default function Home() {
           <span>拖动旋转</span>
           <span>滚轮缩放</span>
           <span>点击建筑</span>
+        </div>
+
+        <div className="timeline">
+          <div className="timeline-heading">
+            <span>暴雨推演时间轴</span>
+            <strong>{minute} 分钟</strong>
+          </div>
+          <input
+            aria-label="推演时间"
+            type="range"
+            min="0"
+            max="60"
+            value={minute}
+            onChange={(event) => {
+              const next = Number(event.target.value);
+              setMinute(next);
+              if (next > 12 && weather !== "storm") setWeather("storm");
+            }}
+          />
+          <div className="timeline-stats">
+            <span>积水深度 <b>{minute < 18 ? 0 : Math.round((minute - 18) * 2.8)} mm</b></span>
+            <span>受影响道路 <b>{minute < 25 ? 0 : Math.ceil((minute - 24) / 12)} 条</b></span>
+            <span>地下入口风险 <b>{minute < 38 ? "低" : minute < 52 ? "中" : "高"}</b></span>
+          </div>
         </div>
       </section>
 

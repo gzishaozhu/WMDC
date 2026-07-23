@@ -5,6 +5,7 @@ import { Text } from "@react-three/drei";
 type Props = {
   selected: string;
   onSelect: (name: string) => void;
+  floodProgress: number;
 };
 
 const buildings = [
@@ -16,7 +17,8 @@ const buildings = [
   { name: "社区服务站", p: [7, 1.25, 4] as const, s: [4, 2.5, 3.6] as const, color: "#718b70" },
 ];
 
-export function District({ selected, onSelect }: Props) {
+export function District({ selected, onSelect, floodProgress }: Props) {
+  const waterLevel = Math.max(0, (floodProgress - 18) / 100);
   return (
     <group>
       <mesh receiveShadow rotation-x={-Math.PI / 2} position={[0, -0.05, 0]}>
@@ -81,6 +83,18 @@ export function District({ selected, onSelect }: Props) {
         <planeGeometry args={[40, 7]} />
         <meshStandardMaterial color="#397d8d" roughness={0.2} metalness={0.18} />
       </mesh>
+      {waterLevel > 0 && (
+        <>
+          <mesh rotation-x={-Math.PI / 2} position={[0, 0.05 + waterLevel * 0.45, 7.2]}>
+            <planeGeometry args={[40, 8 + floodProgress * 0.11]} />
+            <meshStandardMaterial color="#287b98" transparent opacity={0.68} roughness={0.16} metalness={0.12} />
+          </mesh>
+          <mesh rotation-x={-Math.PI / 2} position={[0, 0.06 + waterLevel * 0.32, 0]}>
+            <planeGeometry args={[3.1 + floodProgress * 0.035, 18]} />
+            <meshStandardMaterial color="#3e91a9" transparent opacity={0.55} roughness={0.12} />
+          </mesh>
+        </>
+      )}
     </group>
   );
 }
