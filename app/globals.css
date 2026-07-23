@@ -43,6 +43,17 @@ button, a { font: inherit; }
   font-size: clamp(38px, 5vw, 76px); line-height: 1.08; letter-spacing: -.06em;
   margin: 18px 0; font-weight: 700;
 }
+.weather-control {
+  position:absolute; right:28px; top:28px; padding:14px;
+  background:rgba(237,240,233,.9); border:1px solid rgba(255,255,255,.6);
+  backdrop-filter:blur(16px);
+}
+.weather-control p { margin:0 0 10px; font-size:10px; color:var(--muted); }
+.weather-control button {
+  border:0; border-left:1px solid var(--line); background:transparent;
+  color:var(--ink); padding:7px 12px; font-size:11px; cursor:pointer;
+}
+.weather-control button.active { background:var(--orange); color:white; }
 .building-card {
   position: absolute; right: 28px; bottom: 28px; width: 300px;
   padding: 22px; background: rgba(237, 240, 233, .92); backdrop-filter: blur(18px);
@@ -71,6 +82,7 @@ button, a { font: inherit; }
   .hero-copy { left:20px; top:30px; }
   .hero-copy h1 { font-size:38px; }
   .building-card { left:18px; right:18px; bottom:18px; width:auto; }
+  .weather-control { top:150px; right:18px; }
   .scene-help { left:18px; bottom:265px; }
   .intro-section { grid-template-columns:1fr; padding:70px 20px; }
 }

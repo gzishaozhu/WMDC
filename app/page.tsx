@@ -4,9 +4,12 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useState } from "react";
 import { District } from "./components/District";
+import { Weather, type WeatherMode } from "./components/Weather";
 
 export default function Home() {
   const [selected, setSelected] = useState("滨水文化中心");
+  const [weather, setWeather] = useState<WeatherMode>("clear");
+  const weatherNames = { clear: "晴天", rain: "小雨", storm: "暴雨" };
 
   return (
     <main className="app-shell">
@@ -28,16 +31,17 @@ export default function Home() {
           camera={{ position: [20, 18, 24], fov: 38 }}
           dpr={[1, 1.6]}
         >
-          <color attach="background" args={["#9fb8c4"]} />
-          <fog attach="fog" args={["#9fb8c4", 30, 70]} />
-          <ambientLight intensity={1.2} />
+          <color attach="background" args={[weather === "clear" ? "#9fb8c4" : weather === "rain" ? "#607986" : "#283f4b"]} />
+          <fog attach="fog" args={[weather === "clear" ? "#9fb8c4" : "#405966", weather === "storm" ? 16 : 30, weather === "storm" ? 48 : 70]} />
+          <ambientLight intensity={weather === "clear" ? 1.2 : 0.55} />
           <directionalLight
             castShadow
             position={[12, 22, 8]}
-            intensity={2.5}
+            intensity={weather === "clear" ? 2.5 : 0.7}
             color="#fff2d4"
           />
           <District selected={selected} onSelect={setSelected} />
+          <Weather mode={weather} />
           <OrbitControls
             makeDefault
             target={[0, 1.2, 0]}
@@ -51,6 +55,19 @@ export default function Home() {
         <div className="hero-copy">
           <p>极端天气下的滨水街区数字孪生</p>
           <h1>让城市在暴雨到来前，<br />先经历一次未来。</h1>
+        </div>
+
+        <div className="weather-control" aria-label="天气切换">
+          <p>天气系统</p>
+          {(["clear", "rain", "storm"] as WeatherMode[]).map((mode) => (
+            <button
+              key={mode}
+              className={weather === mode ? "active" : ""}
+              onClick={() => setWeather(mode)}
+            >
+              {weatherNames[mode]}
+            </button>
+          ))}
         </div>
 
         <aside className="building-card">
