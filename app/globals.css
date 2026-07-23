@@ -43,6 +43,19 @@ button, a { font: inherit; }
   font-size: clamp(38px, 5vw, 76px); line-height: 1.08; letter-spacing: -.06em;
   margin: 18px 0; font-weight: 700;
 }
+.hero-copy { transition:opacity .3s, transform .3s; }
+.hero-copy.compact { opacity:.18; transform:translateY(-12px); }
+.scenario-nav {
+  position:absolute; left:50%; top:24px; transform:translateX(-50%);
+  display:grid; grid-template-columns:repeat(4,1fr); width:min(620px,52vw);
+  background:rgba(237,240,233,.9); backdrop-filter:blur(16px);
+}
+.scenario-nav button { border:0; border-right:1px solid var(--line); padding:10px; background:transparent; text-align:left; cursor:pointer; }
+.scenario-nav button:last-child { border:0; }
+.scenario-nav span,.scenario-nav small { display:block; color:var(--muted); font-size:8px; }
+.scenario-nav strong { display:block; margin:5px 0; font-size:10px; }
+.scenario-nav button.active { background:var(--orange); color:white; }
+.scenario-nav button.active span,.scenario-nav button.active small { color:rgba(255,255,255,.72); }
 .weather-control {
   position:absolute; right:28px; top:28px; padding:14px;
   background:rgba(237,240,233,.9); border:1px solid rgba(255,255,255,.6);
@@ -99,6 +112,16 @@ button, a { font: inherit; }
 .intervention strong { color:#317052; }
 .intervention button { width:100%; margin:12px 0 8px; padding:9px; border:0; background:var(--ink); color:white; font-size:10px; cursor:pointer; }
 .intervention small { color:var(--muted); font-size:9px; line-height:1.5; display:block; }
+.event-log {
+  position:absolute; right:28px; top:112px; width:235px; padding:14px;
+  background:rgba(20,44,52,.87); color:white; backdrop-filter:blur(14px);
+}
+.event-log > p { margin:0 0 10px; color:#ef7659; font-size:9px; }
+.event-log > div { display:flex; gap:10px; padding:8px 0; border-top:1px solid rgba(255,255,255,.13); }
+.event-log time { color:#ef7659; font-size:9px; }
+.event-log span { color:#9eb1b2; font-size:8px; line-height:1.5; }
+.event-log span strong { display:block; color:white; font-size:9px; }
+.event-log > small { color:#9eb1b2; font-size:8px; }
 .intro-section {
   display:grid; grid-template-columns:100px 1.5fr 1fr; gap:4vw;
   padding:100px 4vw; border-top:1px solid var(--line); align-items:start;
@@ -125,6 +148,9 @@ button, a { font: inherit; }
   .hero-copy h1 { font-size:38px; }
   .building-card { left:18px; right:18px; bottom:18px; width:auto; }
   .weather-control { top:150px; right:18px; }
+  .scenario-nav { top:18px; width:calc(100% - 36px); }
+  .scenario-nav button { padding:8px 6px; }
+  .event-log { display:none; }
   .layer-control { left:18px; top:240px; }
   .intervention { display:none; }
   .scene-help { display:none; }

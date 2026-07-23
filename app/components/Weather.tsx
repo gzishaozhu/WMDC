@@ -8,6 +8,7 @@ export type WeatherMode = "clear" | "rain" | "storm";
 
 export function Weather({ mode }: { mode: WeatherMode }) {
   const points = useRef<THREE.Points>(null);
+  const flash = useRef<THREE.PointLight>(null);
   const count = mode === "storm" ? 2400 : 1100;
   const positions = useMemo(() => {
     const values = new Float32Array(count * 3);
@@ -28,21 +29,18 @@ export function Weather({ mode }: { mode: WeatherMode }) {
       if (array[i] < 0) array[i] = 24;
     }
     points.current.geometry.attributes.position.needsUpdate = true;
+    if (flash.current && mode === "storm") {
+      const burst = Math.sin(Date.now() * 0.0017) > 0.985;
+      flash.current.intensity = burst ? 55 : Math.max(0, flash.current.intensity - delta * 90);
+    }
   });
 
   if (mode === "clear") return null;
-  return (
+  return <>
     <points ref={points}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        color={mode === "storm" ? "#d9f2ff" : "#e9f7ff"}
-        size={mode === "storm" ? 0.09 : 0.055}
-        transparent
-        opacity={0.72}
-        depthWrite={false}
-      />
+      <bufferGeometry><bufferAttribute attach="attributes-position" args={[positions, 3]} /></bufferGeometry>
+      <pointsMaterial color={mode === "storm" ? "#d9f2ff" : "#e9f7ff"} size={mode === "storm" ? 0.09 : 0.055} transparent opacity={0.72} depthWrite={false} />
     </points>
-  );
+    {mode === "storm" && <pointLight ref={flash} position={[-8, 18, -10]} color="#dcecff" intensity={0} distance={70} />}
+  </>;
 }

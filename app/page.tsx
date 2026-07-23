@@ -17,6 +17,17 @@ export default function Home() {
   const [mitigated, setMitigated] = useState(false);
   const weatherNames = { clear: "晴天", rain: "小雨", storm: "暴雨" };
   const effectiveMinute = mitigated ? minute * 0.58 : minute;
+  const events = [
+    { at: 0, title: "常态运行", detail: "建立街区空间与设备基线" },
+    { at: 15, title: "暴雨预警", detail: "降雨增强，启动地下空间巡查" },
+    { at: 35, title: "积水扩散", detail: "滨水道路出现通行风险" },
+    { at: 50, title: "协同处置", detail: "疏散人群并调度排水车辆" },
+  ];
+  const jumpTo = (at: number) => {
+    setMinute(at);
+    setPlaying(false);
+    setWeather(at === 0 ? "clear" : at < 35 ? "rain" : "storm");
+  };
 
   useEffect(() => {
     if (!playing) return;
@@ -58,7 +69,7 @@ export default function Home() {
         >
           <color attach="background" args={[weather === "clear" ? "#9fb8c4" : weather === "rain" ? "#607986" : "#283f4b"]} />
           <fog attach="fog" args={[weather === "clear" ? "#9fb8c4" : "#405966", weather === "storm" ? 16 : 30, weather === "storm" ? 48 : 70]} />
-          <ambientLight intensity={weather === "clear" ? 1.2 : 0.55} />
+          <ambientLight intensity={weather === "clear" ? 1.2 : minute > 42 ? 0.34 : 0.55} />
           <directionalLight
             castShadow
             position={[12, 22, 8]}
@@ -78,10 +89,19 @@ export default function Home() {
           />
         </Canvas>
 
-        <div className="hero-copy">
+        <div className={`hero-copy ${minute > 10 ? "compact" : ""}`}>
           <p>极端天气下的滨水街区数字孪生</p>
           <h1>让城市在暴雨到来前，<br />先经历一次未来。</h1>
         </div>
+
+        <nav className="scenario-nav" aria-label="推演阶段">
+          {events.map((event, index) => {
+            const active = minute >= event.at && (index === events.length - 1 || minute < events[index + 1].at);
+            return <button key={event.at} className={active ? "active" : ""} onClick={() => jumpTo(event.at)}>
+              <span>0{index + 1}</span><strong>{event.title}</strong><small>{event.at} 分钟</small>
+            </button>;
+          })}
+        </nav>
 
         <div className="weather-control" aria-label="天气切换">
           <p>天气系统</p>
@@ -166,6 +186,14 @@ export default function Home() {
           </button>
           <small>启用后，模拟排水设备提前部署和地下入口封控，积水扩散系数降低 42%。</small>
         </div>
+
+        <aside className="event-log">
+          <p>事件日志</p>
+          {events.filter((event) => event.at <= minute).slice(-3).reverse().map((event) => (
+            <div key={event.at}><time>{String(event.at).padStart(2, "0")}:00</time><span><strong>{event.title}</strong>{event.detail}</span></div>
+          ))}
+          {minute === 0 && <small>拖动时间轴或选择上方阶段开始推演。</small>}
+        </aside>
       </section>
 
       {reportOpen && (
