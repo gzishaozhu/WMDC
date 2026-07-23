@@ -48,6 +48,14 @@ button, a { font: inherit; }
   background:rgba(237,240,233,.9); border:1px solid rgba(255,255,255,.6);
   backdrop-filter:blur(16px);
 }
+.layer-control {
+  position:absolute; left:28px; top:260px; padding:12px;
+  display:flex; flex-direction:column; gap:5px;
+  background:rgba(237,240,233,.88); backdrop-filter:blur(14px);
+}
+.layer-control p { margin:0 0 5px; color:var(--muted); font-size:10px; }
+.layer-control button { border:0; padding:8px 11px; text-align:left; background:transparent; font-size:10px; cursor:pointer; }
+.layer-control button.active { background:var(--ink); color:white; }
 .weather-control p { margin:0 0 10px; font-size:10px; color:var(--muted); }
 .weather-control button {
   border:0; border-left:1px solid var(--line); background:transparent;
@@ -66,6 +74,7 @@ button, a { font: inherit; }
 .building-card dd { margin:0; }
 .safe { color:#317052; }
 .notice { color:var(--muted); font-size:10px; line-height:1.6; margin:18px 0 0; }
+.report-button { width:100%; margin-top:14px; padding:11px; border:0; background:var(--orange); color:white; cursor:pointer; }
 .scene-help { position:absolute; left:32px; bottom:140px; display:flex; gap:8px; }
 .scene-help span { background:rgba(20,44,52,.86); color:white; padding:8px 10px; font-size:10px; }
 .timeline {
@@ -84,6 +93,17 @@ button, a { font: inherit; }
 .section-number { color:var(--orange); font-size:13px; }
 .intro-section h2 { font-size:clamp(34px,4vw,64px); line-height:1.05; letter-spacing:-.06em; margin:20px 0 0; }
 .body-copy { color:var(--muted); line-height:1.9; max-width:460px; margin-top:40px; }
+.modal-backdrop { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:20px; background:rgba(13,31,37,.72); backdrop-filter:blur(12px); }
+.report { width:min(720px,100%); max-height:90vh; overflow:auto; background:var(--paper); padding:42px; position:relative; }
+.report .close { position:absolute; right:24px; top:24px; border:1px solid var(--line); background:transparent; padding:8px 12px; cursor:pointer; }
+.report h2 { margin:16px 0 5px; font-size:38px; letter-spacing:-.04em; }
+.report-date { color:var(--muted); font-size:12px; }
+.report-grid { display:grid; grid-template-columns:repeat(3,1fr); margin:30px 0; border:1px solid var(--line); }
+.report-grid div { padding:20px; border-right:1px solid var(--line); }
+.report-grid div:last-child { border:0; }
+.report-grid span { display:block; color:var(--muted); font-size:10px; }
+.report-grid strong { display:block; margin-top:12px; font-size:24px; }
+.report ol { line-height:2; color:var(--muted); }
 @media (max-width: 760px) {
   .masthead { grid-template-columns:1fr auto; padding:0 18px; }
   .project-meta { display:none; }
@@ -92,8 +112,12 @@ button, a { font: inherit; }
   .hero-copy h1 { font-size:38px; }
   .building-card { left:18px; right:18px; bottom:18px; width:auto; }
   .weather-control { top:150px; right:18px; }
+  .layer-control { left:18px; top:240px; }
   .scene-help { display:none; }
   .timeline { left:18px; right:18px; bottom:270px; }
   .timeline-stats { gap:10px; flex-wrap:wrap; }
   .intro-section { grid-template-columns:1fr; padding:70px 20px; }
+  .report { padding:30px 20px; }
+  .report-grid { grid-template-columns:1fr; }
+  .report-grid div { border-right:0; border-bottom:1px solid var(--line); }
 }

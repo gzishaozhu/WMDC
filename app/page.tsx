@@ -11,6 +11,8 @@ export default function Home() {
   const [selected, setSelected] = useState("滨水文化中心");
   const [weather, setWeather] = useState<WeatherMode>("clear");
   const [minute, setMinute] = useState(0);
+  const [layer, setLayer] = useState<"city" | "risk" | "elevation">("city");
+  const [reportOpen, setReportOpen] = useState(false);
   const weatherNames = { clear: "晴天", rain: "小雨", storm: "暴雨" };
 
   return (
@@ -42,7 +44,7 @@ export default function Home() {
             intensity={weather === "clear" ? 2.5 : 0.7}
             color="#fff2d4"
           />
-          <District selected={selected} onSelect={setSelected} floodProgress={minute} />
+          <District selected={selected} onSelect={setSelected} floodProgress={minute} layer={layer} />
           <Weather mode={weather} />
           <SimulationActors minute={minute} />
           <OrbitControls
@@ -73,6 +75,19 @@ export default function Home() {
           ))}
         </div>
 
+        <div className="layer-control" aria-label="数据图层">
+          <p>数据图层</p>
+          {[
+            ["city", "城市材质"],
+            ["risk", "风险等级"],
+            ["elevation", "地形高程"],
+          ].map(([value, label]) => (
+            <button key={value} className={layer === value ? "active" : ""} onClick={() => setLayer(value as typeof layer)}>
+              {label}
+            </button>
+          ))}
+        </div>
+
         <aside className="building-card">
           <p>当前建筑</p>
           <h2>{selected}</h2>
@@ -82,6 +97,7 @@ export default function Home() {
             <div><dt>地下空间</dt><dd>{selected === "交通枢纽" ? "2 层" : "1 层"}</dd></div>
           </dl>
           <p className="notice">当前为功能演示数据。点击场景中的建筑可切换查看。</p>
+          <button className="report-button" onClick={() => setReportOpen(true)}>生成推演报告</button>
         </aside>
 
         <div className="scene-help">
@@ -115,6 +131,29 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {reportOpen && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label="推演报告">
+          <article className="report">
+            <button className="close" onClick={() => setReportOpen(false)}>关闭</button>
+            <p className="kicker">TIDELINE / 自动汇总</p>
+            <h2>滨水街区暴雨推演报告</h2>
+            <p className="report-date">演示报告 · 推演节点 {minute} 分钟</p>
+            <div className="report-grid">
+              <div><span>最大积水深度</span><strong>{minute < 18 ? 0 : Math.round((minute - 18) * 2.8)} mm</strong></div>
+              <div><span>受影响道路</span><strong>{minute < 25 ? 0 : Math.ceil((minute - 24) / 12)} 条</strong></div>
+              <div><span>疏散进度</span><strong>{minute < 28 ? 0 : Math.min(100, Math.round((minute - 28) / 32 * 100))}%</strong></div>
+            </div>
+            <h3>系统建议</h3>
+            <ol>
+              <li>在 30 分钟前关闭交通枢纽地下入口。</li>
+              <li>排水车沿中央道路进入，避免滨水低洼路段。</li>
+              <li>人群向西侧文化中心高地疏散。</li>
+            </ol>
+            <p className="notice">本报告由演示规则生成，不代表真实城市应急结论。</p>
+          </article>
+        </div>
+      )}
 
       <section className="intro-section">
         <p className="section-number">01</p>

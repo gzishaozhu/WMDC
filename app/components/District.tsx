@@ -6,6 +6,7 @@ type Props = {
   selected: string;
   onSelect: (name: string) => void;
   floodProgress: number;
+  layer: "city" | "risk" | "elevation";
 };
 
 const buildings = [
@@ -17,7 +18,7 @@ const buildings = [
   { name: "社区服务站", p: [7, 1.25, 4] as const, s: [4, 2.5, 3.6] as const, color: "#718b70" },
 ];
 
-export function District({ selected, onSelect, floodProgress }: Props) {
+export function District({ selected, onSelect, floodProgress, layer }: Props) {
   const waterLevel = Math.max(0, (floodProgress - 18) / 100);
   return (
     <group>
@@ -53,7 +54,12 @@ export function District({ selected, onSelect, floodProgress }: Props) {
             >
               <boxGeometry args={building.s} />
               <meshStandardMaterial
-                color={active ? "#f0d475" : building.color}
+                color={
+                  active ? "#f0d475" :
+                  layer === "risk" ? (building.name === "交通枢纽" ? "#d84437" : building.name === "城市展厅" ? "#ed9c43" : "#7d9d83") :
+                  layer === "elevation" ? (building.p[0] > 3 ? "#4b8ba0" : building.p[0] > -3 ? "#70a483" : "#d3b765") :
+                  building.color
+                }
                 roughness={0.72}
                 metalness={0.03}
               />
