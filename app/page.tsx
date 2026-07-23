@@ -78,7 +78,7 @@ export default function Home() {
           />
           <District selected={selected} onSelect={setSelected} floodProgress={minute} layer={layer} mitigated={mitigated} />
           <Weather mode={weather} />
-          <SimulationActors minute={minute} />
+          <SimulationActors minute={minute} mitigated={mitigated} />
           <OrbitControls
             makeDefault
             target={[0, 1.2, 0]}
