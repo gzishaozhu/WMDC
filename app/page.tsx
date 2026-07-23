@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { District } from "./components/District";
 import { Weather, type WeatherMode } from "./components/Weather";
 import { SimulationActors } from "./components/SimulationActors";
@@ -13,7 +13,28 @@ export default function Home() {
   const [minute, setMinute] = useState(0);
   const [layer, setLayer] = useState<"city" | "risk" | "elevation">("city");
   const [reportOpen, setReportOpen] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [mitigated, setMitigated] = useState(false);
   const weatherNames = { clear: "晴天", rain: "小雨", storm: "暴雨" };
+  const effectiveMinute = mitigated ? minute * 0.58 : minute;
+
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setInterval(() => {
+      setMinute((current) => {
+        if (current >= 60) {
+          setPlaying(false);
+          return 60;
+        }
+        return current + 1;
+      });
+    }, 220);
+    return () => window.clearInterval(timer);
+  }, [playing]);
+
+  useEffect(() => {
+    if (minute > 12) setWeather("storm");
+  }, [minute]);
 
   return (
     <main className="app-shell">
@@ -44,7 +65,7 @@ export default function Home() {
             intensity={weather === "clear" ? 2.5 : 0.7}
             color="#fff2d4"
           />
-          <District selected={selected} onSelect={setSelected} floodProgress={minute} layer={layer} />
+          <District selected={selected} onSelect={setSelected} floodProgress={minute} layer={layer} mitigated={mitigated} />
           <Weather mode={weather} />
           <SimulationActors minute={minute} />
           <OrbitControls
@@ -109,7 +130,11 @@ export default function Home() {
         <div className="timeline">
           <div className="timeline-heading">
             <span>暴雨推演时间轴</span>
-            <strong>{minute} 分钟</strong>
+            <div className="playback">
+              <button onClick={() => setPlaying(!playing)}>{playing ? "暂停" : "自动播放"}</button>
+              <button onClick={() => { setMinute(0); setPlaying(false); }}>重置</button>
+              <strong>{minute} 分钟</strong>
+            </div>
           </div>
           <input
             aria-label="推演时间"
@@ -124,11 +149,22 @@ export default function Home() {
             }}
           />
           <div className="timeline-stats">
-            <span>积水深度 <b>{minute < 18 ? 0 : Math.round((minute - 18) * 2.8)} mm</b></span>
-            <span>受影响道路 <b>{minute < 25 ? 0 : Math.ceil((minute - 24) / 12)} 条</b></span>
-            <span>地下入口风险 <b>{minute < 38 ? "低" : minute < 52 ? "中" : "高"}</b></span>
+            <span>积水深度 <b>{effectiveMinute < 18 ? 0 : Math.round((effectiveMinute - 18) * 2.8)} mm</b></span>
+            <span>受影响道路 <b>{effectiveMinute < 25 ? 0 : Math.ceil((effectiveMinute - 24) / 12)} 条</b></span>
+            <span>地下入口风险 <b>{effectiveMinute < 38 ? "低" : effectiveMinute < 52 ? "中" : "高"}</b></span>
             <span>疏散状态 <b>{minute < 28 ? "待命" : minute < 58 ? "进行中" : "完成"}</b></span>
           </div>
+        </div>
+
+        <div className={`intervention ${mitigated ? "enabled" : ""}`}>
+          <div>
+            <p>应急干预方案</p>
+            <strong>{mitigated ? "已启用" : "未启用"}</strong>
+          </div>
+          <button onClick={() => setMitigated(!mitigated)}>
+            {mitigated ? "查看未干预结果" : "启用排水与封控"}
+          </button>
+          <small>启用后，模拟排水设备提前部署和地下入口封控，积水扩散系数降低 42%。</small>
         </div>
       </section>
 
@@ -140,8 +176,8 @@ export default function Home() {
             <h2>滨水街区暴雨推演报告</h2>
             <p className="report-date">演示报告 · 推演节点 {minute} 分钟</p>
             <div className="report-grid">
-              <div><span>最大积水深度</span><strong>{minute < 18 ? 0 : Math.round((minute - 18) * 2.8)} mm</strong></div>
-              <div><span>受影响道路</span><strong>{minute < 25 ? 0 : Math.ceil((minute - 24) / 12)} 条</strong></div>
+              <div><span>最大积水深度</span><strong>{effectiveMinute < 18 ? 0 : Math.round((effectiveMinute - 18) * 2.8)} mm</strong></div>
+              <div><span>受影响道路</span><strong>{effectiveMinute < 25 ? 0 : Math.ceil((effectiveMinute - 24) / 12)} 条</strong></div>
               <div><span>疏散进度</span><strong>{minute < 28 ? 0 : Math.min(100, Math.round((minute - 28) / 32 * 100))}%</strong></div>
             </div>
             <h3>系统建议</h3>
